@@ -36,7 +36,9 @@ namespace CodeChallenge.Controllers
             var employee = _employeeService.GetById(id);
 
             if (employee == null)
+            {
                 return NotFound();
+            }
 
             return Ok(employee);
         }
@@ -48,7 +50,9 @@ namespace CodeChallenge.Controllers
 
             var existingEmployee = _employeeService.GetById(id);
             if (existingEmployee == null)
+            {
                 return NotFound();
+            }
 
             _employeeService.Replace(existingEmployee, newEmployee);
 
@@ -61,6 +65,11 @@ namespace CodeChallenge.Controllers
             _logger.LogDebug($"Received reporting structure get request for '{id}'");
 
             var employee = _employeeService.GetById(id, true);
+            if (employee == null)
+            {
+                return NotFound();
+            }
+
             var reportingStructure = _employeeService.GetReportingStructure(employee);
             return Ok(reportingStructure);
         }

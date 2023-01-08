@@ -81,6 +81,7 @@ namespace CodeCodeChallenge.Tests.Integration
             var employee = response.DeserializeContent<Employee>();
             Assert.AreEqual(expectedFirstName, employee.FirstName);
             Assert.AreEqual(expectedLastName, employee.LastName);
+            Assert.IsNull(employee.DirectReports);
         }
 
         [TestMethod]
@@ -150,6 +151,39 @@ namespace CodeCodeChallenge.Tests.Integration
             var reportingStructure = response.DeserializeContent<ReportingStructure>();
             Assert.AreEqual(expectedFirstName, reportingStructure.Employee.FirstName);
             Assert.AreEqual(expectedNumberOfReports, reportingStructure.NumberOfReports);
+        }
+
+        [TestMethod]
+        public void GetReportingStructure_Returns_Empty_Ok()
+        {
+            // Arrange
+            var employeeId = "b7839309-3348-463b-a7e3-5de1c168beb3";
+            var expectedFirstName = "Paul";
+            var expectedNumberOfReports = 0;
+
+            // Execute
+            var getRequestTask = _httpClient.GetAsync($"api/employee/{employeeId}/reporting-structure");
+            var response = getRequestTask.Result;
+
+            // Assert
+            Assert.AreEqual(HttpStatusCode.OK, response.StatusCode);
+            var reportingStructure = response.DeserializeContent<ReportingStructure>();
+            Assert.AreEqual(expectedFirstName, reportingStructure.Employee.FirstName);
+            Assert.AreEqual(expectedNumberOfReports, reportingStructure.NumberOfReports);
+        }
+
+        [TestMethod]
+        public void GetReportingStructure_Returns_NotFound()
+        {
+            // Arrange
+            var employeeId = "Invalid_Id";
+
+            // Execute
+            var getRequestTask = _httpClient.GetAsync($"api/employee/{employeeId}/reporting-structure");
+            var response = getRequestTask.Result;
+
+            // Assert
+            Assert.AreEqual(HttpStatusCode.NotFound, response.StatusCode);
         }
     }
 }

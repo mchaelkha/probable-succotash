@@ -43,6 +43,10 @@ namespace CodeChallenge.Repositories
 
         public List<Employee> GetDirectReports(Employee employee)
         {
+            if (employee.DirectReports == null)
+            {
+                return new();
+            }
             return _employeeContext.Employees.Include(e => e.DirectReports).Where(e => employee.DirectReports.Contains(e)).ToList();
         }
 

@@ -69,15 +69,11 @@ namespace CodeChallenge.Services
 
         public ReportingStructure GetReportingStructure(Employee employee)
         {
-            var reportingStructure = new ReportingStructure();
-            int numberofReports = 0;
-            if (employee != null)
+            return new ReportingStructure
             {
-                reportingStructure.Employee = employee;
-                numberofReports = CountTotalNumberOfReports(employee);
-            }
-            reportingStructure.NumberOfReports = numberofReports;
-            return reportingStructure;
+                Employee = employee,
+                NumberOfReports = CountTotalNumberOfReports(employee)
+            };
         }
 
         private int CountTotalNumberOfReports(Employee employee)
@@ -87,23 +83,18 @@ namespace CodeChallenge.Services
             {
                 return totalNumberOfReports;
             }
-            List<Employee> directReports = _employeeRepository.GetDirectReports(employee);
-            if (directReports == null)
-            {
-                return totalNumberOfReports;
-            }
 
-            Queue<Employee> queue = new Queue<Employee>(employee.DirectReports);
+            var queue = new Queue<Employee>(new List<Employee> { employee });
             while (queue.Count > 0)
             {
                 Employee currentEmployee = queue.Dequeue();
                 totalNumberOfReports++;
 
-                List<Employee> reports = _employeeRepository.GetDirectReports(currentEmployee);
-                reports?.ForEach(report => queue.Enqueue(_employeeRepository.GetById(report.EmployeeId)));
+                List<Employee> directReports = _employeeRepository.GetDirectReports(currentEmployee);
+                directReports.ForEach(report => queue.Enqueue(_employeeRepository.GetById(report.EmployeeId)));
             }
 
-            return totalNumberOfReports;
+            return totalNumberOfReports - 1;
         }
     }
 }
