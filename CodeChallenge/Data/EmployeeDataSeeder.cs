@@ -1,6 +1,5 @@
 ﻿using CodeChallenge.Models;
 using Newtonsoft.Json;
-using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -11,7 +10,7 @@ namespace CodeChallenge.Data
     public class EmployeeDataSeeder
     {
         private EmployeeContext _employeeContext;
-        private const String EMPLOYEE_SEED_DATA_FILE = "resources/EmployeeSeedData.json";
+        private const string EMPLOYEE_SEED_DATA_FILE = "resources/EmployeeSeedData.json";
 
         public EmployeeDataSeeder(EmployeeContext employeeContext)
         {
@@ -51,7 +50,7 @@ namespace CodeChallenge.Data
 
             employees.ForEach(employee =>
             {
-                
+
                 if (employee.DirectReports != null)
                 {
                     var referencedEmployees = new List<Employee>(employee.DirectReports.Count);
