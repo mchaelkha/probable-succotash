@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using CodeChallenge.Services;
 using CodeChallenge.Models;
@@ -29,11 +25,11 @@ namespace CodeChallenge.Controllers
 
             _employeeService.Create(employee);
 
-            return CreatedAtRoute("getEmployeeById", new { id = employee.EmployeeId }, employee);
+            return CreatedAtRoute(nameof(GetEmployeeById), new { id = employee.EmployeeId }, employee);
         }
 
-        [HttpGet("{id}", Name = "getEmployeeById")]
-        public IActionResult GetEmployeeById(String id)
+        [HttpGet("{id}", Name = nameof(GetEmployeeById))]
+        public IActionResult GetEmployeeById(string id)
         {
             _logger.LogDebug($"Received employee get request for '{id}'");
 
@@ -46,9 +42,9 @@ namespace CodeChallenge.Controllers
         }
 
         [HttpPut("{id}")]
-        public IActionResult ReplaceEmployee(String id, [FromBody]Employee newEmployee)
+        public IActionResult ReplaceEmployee(string id, [FromBody]Employee newEmployee)
         {
-            _logger.LogDebug($"Recieved employee update request for '{id}'");
+            _logger.LogDebug($"Received employee update request for '{id}'");
 
             var existingEmployee = _employeeService.GetById(id);
             if (existingEmployee == null)
@@ -57,6 +53,16 @@ namespace CodeChallenge.Controllers
             _employeeService.Replace(existingEmployee, newEmployee);
 
             return Ok(newEmployee);
+        }
+
+        [HttpGet("{id}/reporting-structure")]
+        public IActionResult GetReportingStructure(string id)
+        {
+            _logger.LogDebug($"Received reporting structure get request for '{id}'");
+
+            var employee = _employeeService.GetById(id, true);
+            var reportingStructure = _employeeService.GetReportingStructure(employee);
+            return Ok(reportingStructure);
         }
     }
 }
