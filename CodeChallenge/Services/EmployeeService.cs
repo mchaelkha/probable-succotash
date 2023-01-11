@@ -96,5 +96,31 @@ namespace CodeChallenge.Services
 
             return totalNumberOfReports - 1;
         }
+
+        public Compensation Create(Compensation compensation)
+        {
+            if (compensation != null)
+            {
+                // replace reference to correct entity, otherwise EF will complain another entity w/ same id already exists
+                if (compensation.Employee != null)
+                {
+                    compensation.Employee = _employeeRepository.GetById(compensation.Employee.EmployeeId);
+                }
+                _employeeRepository.Add(compensation);
+                _employeeRepository.SaveAsync().Wait();
+            }
+
+            return compensation;
+        }
+
+        public Compensation GetCompensation(Employee employee)
+        {
+            if (employee != null)
+            {
+                return _employeeRepository.GetCompensation(employee);
+            }
+
+            return null;
+        }
     }
 }

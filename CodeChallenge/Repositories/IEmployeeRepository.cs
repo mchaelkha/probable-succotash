@@ -11,6 +11,8 @@ namespace CodeChallenge.Repositories
         Employee Add(Employee employee);
         Employee Remove(Employee employee);
         List<Employee> GetDirectReports(Employee employee);
+        Compensation Add(Compensation compensation);
+        Compensation GetCompensation(Employee employee);
         Task SaveAsync();
     }
 }

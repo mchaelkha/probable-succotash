@@ -26,6 +26,10 @@ namespace CodeChallenge.Repositories
             _employeeContext.Employees.Add(employee);
             return employee;
         }
+        public Employee Remove(Employee employee)
+        {
+            return _employeeContext.Remove(employee).Entity;
+        }
 
         public Employee GetById(string id)
         {
@@ -50,14 +54,21 @@ namespace CodeChallenge.Repositories
             return _employeeContext.Employees.Include(e => e.DirectReports).Where(e => employee.DirectReports.Contains(e)).ToList();
         }
 
+        public Compensation Add(Compensation compensation)
+        {
+            compensation.CompensationId = Guid.NewGuid().ToString();
+            _employeeContext.Compensations.Add(compensation);
+            return compensation;
+        }
+
+        public Compensation GetCompensation(Employee employee)
+        {
+            return _employeeContext.Compensations.SingleOrDefault(c => c.Employee.EmployeeId == employee.EmployeeId);
+        }
+
         public Task SaveAsync()
         {
             return _employeeContext.SaveChangesAsync();
-        }
-
-        public Employee Remove(Employee employee)
-        {
-            return _employeeContext.Remove(employee).Entity;
         }
     }
 }

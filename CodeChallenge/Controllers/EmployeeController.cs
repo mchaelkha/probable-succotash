@@ -71,7 +71,43 @@ namespace CodeChallenge.Controllers
             }
 
             var reportingStructure = _employeeService.GetReportingStructure(employee);
+
             return Ok(reportingStructure);
+        }
+
+        [HttpPost("{id}/compensation")]
+        public IActionResult CreateCompensation([FromBody]Compensation compensation)
+        {
+            _logger.LogDebug($"Received compensation post request for '{compensation.Employee.EmployeeId}'");
+
+            if (_employeeService.GetById(compensation.Employee.EmployeeId) == null)
+            {
+                return NotFound();
+            }
+
+            _employeeService.Create(compensation);
+
+            return CreatedAtRoute(nameof(GetCompensation), new { id = compensation.Employee.EmployeeId }, compensation);
+        }
+
+        [HttpGet("{id}/compensation", Name = nameof(GetCompensation))]
+        public IActionResult GetCompensation(string id)
+        {
+            _logger.LogDebug($"Received compensation get request for '{id}'");
+
+            var employee = _employeeService.GetById(id);
+            if (employee == null)
+            {
+                return StatusCode(404, "Employee does not exist.");
+            }
+
+            var compensation = _employeeService.GetCompensation(employee);
+            if (compensation == null)
+            {
+                return StatusCode(404, "Compensation does not exist for employee.");
+            }
+
+            return Ok(compensation);
         }
     }
 }
