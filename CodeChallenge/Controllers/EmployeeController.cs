@@ -98,13 +98,13 @@ namespace CodeChallenge.Controllers
             var employee = _employeeService.GetById(id);
             if (employee == null)
             {
-                return StatusCode(404, "Employee does not exist.");
+                return NotFound();
             }
 
             var compensation = _employeeService.GetCompensation(employee);
             if (compensation == null)
             {
-                return StatusCode(404, "Compensation does not exist for employee.");
+                return NotFound();
             }
 
             return Ok(compensation);
